@@ -6,7 +6,9 @@ import { Spinner } from '../spinner/spinner'
 import './button.styles.css'
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  /** Внешний вид: основная (одна на экран), обычная, тихая (без рамки) или опасная. */
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  /** Высота: 32, 40 или 48 px — совпадает с высотой полей того же размера. */
   size?: 'sm' | 'md' | 'lg'
   /** Идёт действие: показать индикатор и не принимать нажатия. */
   loading?: boolean

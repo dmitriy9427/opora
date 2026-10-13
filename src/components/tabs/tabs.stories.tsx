@@ -1,21 +1,53 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useState } from 'react'
 
-import { Accordion, AccordionItem } from '../accordion/accordion'
+import { Badge } from '../badge/badge'
 import { Tab, TabList, TabPanel, Tabs } from './tabs'
 
 const meta = {
-  title: 'Компоненты/Tabs и Accordion',
+  title: 'Структура/Tabs',
   component: Tabs,
-  parameters: { controls: { disable: true } },
-} satisfies Meta<typeof Tabs>
-export default meta
-type Story = StoryObj
+  subcomponents: { TabList, Tab, TabPanel },
+  parameters: {
+    docs: {
+      description: {
+        component: `
+Вкладки: несколько панелей на одном месте, видна одна.
 
-/** Tab входит в список вкладок один раз; между вкладками — стрелки, Home и End. */
-export const Horizontal: Story = {
-  name: 'Вкладки',
-  render: () => (
-    <Tabs defaultValue="profile" className="sb-wide">
+\`\`\`tsx
+import { Tab, TabList, TabPanel, Tabs } from 'opora-ui'
+
+<Tabs defaultValue="profile">
+  <TabList aria-label="Настройки">
+    <Tab value="profile">Профиль</Tab>
+    <Tab value="access">Доступ</Tab>
+  </TabList>
+  <TabPanel value="profile">…</TabPanel>
+  <TabPanel value="access">…</TabPanel>
+</Tabs>
+\`\`\`
+
+\`Tab\` и \`TabPanel\` связаны одинаковым \`value\`.
+
+**Клавиатура:** Tab — на выбранную вкладку, затем в панель; ← → (или ↑ ↓ у вертикальных) —
+между вкладками; Home и End — первая и последняя.
+
+**Важно**
+
+- Задайте \`defaultValue\` (или \`value\`): иначе не выбрана ни одна вкладка.
+- У \`TabList\` должен быть \`aria-label\` — название набора вкладок.
+- \`activation="manual"\` — стрелки только двигают фокус, открывает Enter. Берите, когда панель грузит данные.
+- \`keepMounted\` у \`TabPanel\` — не удалять скрытую панель (сохраняет введённый в ней текст).
+- Вкладки — не навигация по сайту: для страниц с разными адресами нужны ссылки.
+`,
+      },
+    },
+    controls: { exclude: ['children'] },
+  },
+  args: { defaultValue: 'profile', orientation: 'horizontal', activation: 'automatic' },
+  argTypes: { orientation: { control: 'inline-radio' }, activation: { control: 'inline-radio' } },
+  render: (args) => (
+    <Tabs {...args} className="sb-wide">
       <TabList aria-label="Настройки">
         <Tab value="profile">Профиль</Tab>
         <Tab value="access">Доступ</Tab>
@@ -29,13 +61,19 @@ export const Horizontal: Story = {
       <TabPanel value="billing">Тариф и способ оплаты.</TabPanel>
     </Tabs>
   ),
-}
+} satisfies Meta<typeof Tabs>
+export default meta
+type Story = StoryObj<typeof meta>
 
-/** `activation="manual"`: стрелки только двигают фокус, вкладку открывает Enter или Пробел. */
+/** Отложите мышь: Tab, затем стрелки, Home, End. Выключенная вкладка пропускается. */
+export const Playground: Story = {}
+
+/** Стрелки вверх и вниз; открывает Enter или Пробел. */
 export const VerticalManual: Story = {
   name: 'Вертикальные, ручная активация',
-  render: () => (
-    <Tabs defaultValue="a" orientation="vertical" activation="manual" className="sb-wide">
+  args: { defaultValue: 'a', orientation: 'vertical', activation: 'manual' },
+  render: (args) => (
+    <Tabs {...args} className="sb-wide">
       <TabList aria-label="Разделы справки">
         <Tab value="a">Начало работы</Tab>
         <Tab value="b">Оплата</Tab>
@@ -48,40 +86,22 @@ export const VerticalManual: Story = {
   ),
 }
 
-/** Высота раскрывается плавно без JavaScript: анимируется строка сетки от 0fr до 1fr. */
-export const AccordionSingle: Story = {
-  name: 'Аккордеон: одна секция',
-  render: () => (
-    <Accordion defaultValue="delivery" className="sb-wide">
-      <AccordionItem value="delivery" title="Как работает доставка?">
-        Курьером на следующий день или в пункт выдачи. Бесплатно от 3 000 ₽.
-      </AccordionItem>
-      <AccordionItem value="payment" title="Какие способы оплаты?">
-        Картой, через СБП или при получении.
-      </AccordionItem>
-      <AccordionItem value="return" title="Можно ли вернуть товар?">
-        В течение 14 дней, если сохранена упаковка.
-      </AccordionItem>
-      <AccordionItem value="b2b" title="Оптовые заказы" disabled>
-        Скоро.
-      </AccordionItem>
-    </Accordion>
-  ),
-}
-
-export const AccordionMultiple: Story = {
-  name: 'Аккордеон: несколько секций',
-  render: () => (
-    <Accordion type="multiple" defaultValue={['a', 'b']} className="sb-wide">
-      <AccordionItem value="a" title="Первая">
-        Секции открываются независимо друг от друга.
-      </AccordionItem>
-      <AccordionItem value="b" title="Вторая">
-        Эта тоже открыта.
-      </AccordionItem>
-      <AccordionItem value="c" title="Третья">
-        А эта закрыта.
-      </AccordionItem>
-    </Accordion>
-  ),
+/** Управляемый режим: выбранную вкладку хранит ваш компонент — например, чтобы записать её в адрес страницы. */
+export const Controlled: Story = {
+  name: 'Управляемые, со счётчиком',
+  render: function Render() {
+    const [tab, setTab] = useState('new')
+    return (
+      <Tabs value={tab} onValueChange={setTab} className="sb-wide">
+        <TabList aria-label="Заказы">
+          <Tab value="new">
+            Новые <Badge tone="accent">3</Badge>
+          </Tab>
+          <Tab value="done">Выполненные</Tab>
+        </TabList>
+        <TabPanel value="new">Три новых заказа.</TabPanel>
+        <TabPanel value="done">Здесь выполненные заказы.</TabPanel>
+      </Tabs>
+    )
+  },
 }

@@ -44,7 +44,16 @@ const usePopover = (name: string) => {
   return context
 }
 
-export type PopoverProps = { open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void; children: ReactNode }
+export type PopoverProps = {
+  /** Открыт ли поповер (управляемый режим). */
+  open?: boolean
+  /** Открыть при первом показе. */
+  defaultOpen?: boolean
+  /** Вызывается при открытии и закрытии. */
+  onOpenChange?: (open: boolean) => void
+  /** PopoverTrigger и PopoverContent. */
+  children: ReactNode
+}
 
 export function Popover({ open, defaultOpen = false, onOpenChange, children }: PopoverProps) {
   const [isOpen, setOpen] = useControllableState({ value: open, defaultValue: defaultOpen, onChange: onOpenChange })
@@ -84,7 +93,9 @@ export function PopoverClose({ asChild = false, onClick, ...props }: TriggerProp
 }
 
 export type PopoverContentProps = HTMLAttributes<HTMLDivElement> & {
+  /** С какой стороны кнопки и как выровнять: 'bottom-start', 'top', 'right-end'… Не помещается — перевернётся. */
   placement?: Placement
+  /** Зазор между кнопкой и панелью, px. */
   offset?: number
   ref?: Ref<HTMLDivElement>
 }

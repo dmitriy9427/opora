@@ -19,13 +19,19 @@ const RadioContext = createContext<RadioContextValue | null>(null)
 export type RadioGroupProps = Omit<FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange' | 'defaultValue'> & {
   /** Подпись группы. */
   label: ReactNode
+  /** Выбранное значение (управляемый режим). */
   value?: string | null
+  /** Значение при первом показе (неуправляемый режим). */
   defaultValue?: string | null
+  /** Вызывается с новым значением. */
   onValueChange?: (value: string) => void
   /** Имя поля формы; не задано — сгенерируется. */
   name?: string
+  /** Расположение вариантов: столбцом или в строку. */
   orientation?: 'vertical' | 'horizontal'
+  /** Обязательный выбор. */
   required?: boolean
+  /** Текст ошибки под группой. */
   error?: ReactNode
 }
 
@@ -86,7 +92,9 @@ export type RadioProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'type' | 'children' | 'value' | 'checked' | 'defaultChecked' | 'name'
 > & {
+  /** Значение варианта. */
   value: string
+  /** Подпись варианта. */
   children: ReactNode
   ref?: Ref<HTMLInputElement>
 }

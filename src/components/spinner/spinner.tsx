@@ -4,6 +4,7 @@ import { cx } from '../../primitives/compose'
 import './spinner.styles.css'
 
 export type SpinnerProps = HTMLAttributes<HTMLSpanElement> & {
+  /** Размер относительно шрифта: 1em, 1.25em или 2em. */
   size?: 'sm' | 'md' | 'lg'
   /** Что сказать скринридеру. Пустая строка — индикатор декоративный (рядом уже есть текст «Загрузка»). */
   label?: string

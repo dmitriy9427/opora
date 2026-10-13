@@ -8,8 +8,15 @@ const preview: Preview = {
   parameters: {
     layout: 'centered',
     controls: { expanded: true },
+    docs: {
+      // Под каждым примером сразу виден его код — и это код самой истории, а не её результата.
+      canvas: { sourceState: 'shown' },
+      source: { type: 'code' },
+    },
     options: {
-      storySort: { order: ['Опора', ['Введение', 'Темы и стили'], 'Компоненты', 'Примеры'] },
+      storySort: {
+        order: ['Опора', ['Введение', 'Установка', 'Темы и стили'], 'Действия', 'Формы', 'Структура', 'Всплывающие', 'Примеры'],
+      },
     },
     // Вкладка Accessibility: нарушения показываются как ошибки, а не предупреждения.
     a11y: { test: 'error' },
@@ -28,6 +35,8 @@ const preview: Preview = {
       },
     },
   },
+  // ref есть у каждого компонента и работает как обычно — в таблицах пропсов он только шумит.
+  argTypes: { ref: { table: { disable: true } } },
   initialGlobals: { theme: 'light' },
   decorators: [
     (Story, context) => {

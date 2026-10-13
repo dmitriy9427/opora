@@ -44,7 +44,14 @@ import { usePresence } from '../../primitives/presence'
 import { useFieldControl } from '../field/field'
 import './select.styles.css'
 
-export type SelectOptionProps = { value: string; children: string; disabled?: boolean }
+export type SelectOptionProps = {
+  /** Значение варианта. */
+  value: string
+  /** Подпись варианта — только текст. */
+  children: string
+  /** Вариант виден, но выбрать его нельзя. */
+  disabled?: boolean
+}
 
 /** Вариант селекта. Сам ничего не рисует — его пропсы читает <Select>. */
 export function SelectOption(_props: SelectOptionProps) {
@@ -52,14 +59,21 @@ export function SelectOption(_props: SelectOptionProps) {
 }
 
 export type SelectProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'defaultValue' | 'onChange' | 'children'> & {
+  /** Выбранное значение (управляемый режим). */
   value?: string | null
+  /** Значение при первом показе (неуправляемый режим). */
   defaultValue?: string | null
+  /** Вызывается с новым значением. */
   onValueChange?: (value: string) => void
+  /** Текст, пока ничего не выбрано. */
   placeholder?: string
   /** Имя поля формы — с ним значение уйдёт при отправке. */
   name?: string
+  /** Обязательное поле. */
   required?: boolean
+  /** Высота: 32, 40 или 48 px. */
   size?: 'sm' | 'md' | 'lg'
+  /** Варианты — прямые дети SelectOption. */
   children: ReactNode
   ref?: Ref<HTMLButtonElement>
 }

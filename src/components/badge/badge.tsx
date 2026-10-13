@@ -4,6 +4,7 @@ import { cx } from '../../primitives/compose'
 import './badge.styles.css'
 
 export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
+  /** Цвет метки. Смысл должен быть и в тексте: цвет различают не все. */
   tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'danger'
 }
 

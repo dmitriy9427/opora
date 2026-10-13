@@ -11,6 +11,7 @@ import { cx } from '../../primitives/compose'
 import './switch.styles.css'
 
 export type SwitchProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'children' | 'role'> & {
+  /** Подпись справа. Без неё нужен aria-label. */
   children?: ReactNode
   ref?: Ref<HTMLInputElement>
 }

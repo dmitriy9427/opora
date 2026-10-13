@@ -53,7 +53,16 @@ const useMenu = (name: string) => {
   return context
 }
 
-export type MenuProps = { open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean) => void; children: ReactNode }
+export type MenuProps = {
+  /** Открыто ли меню (управляемый режим). */
+  open?: boolean
+  /** Открыть при первом показе. */
+  defaultOpen?: boolean
+  /** Вызывается при открытии и закрытии. */
+  onOpenChange?: (open: boolean) => void
+  /** MenuTrigger и MenuContent. */
+  children: ReactNode
+}
 
 export function Menu({ open, defaultOpen = false, onOpenChange, children }: MenuProps) {
   const [isOpen, setOpen] = useControllableState({ value: open, defaultValue: defaultOpen, onChange: onOpenChange })
@@ -100,7 +109,11 @@ export function MenuTrigger({
   )
 }
 
-export type MenuContentProps = HTMLAttributes<HTMLDivElement> & { placement?: Placement; ref?: Ref<HTMLDivElement> }
+export type MenuContentProps = HTMLAttributes<HTMLDivElement> & {
+  /** С какой стороны кнопки открыть и как выровнять. */
+  placement?: Placement
+  ref?: Ref<HTMLDivElement>
+}
 
 export function MenuContent({ placement = 'bottom-start', className, style, onKeyDown, children, ref, ...props }: MenuContentProps) {
   const menu = useMenu('MenuContent')
@@ -161,9 +174,11 @@ export function MenuContent({ placement = 'bottom-start', className, style, onKe
 export type MenuItemProps = Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> & {
   /** Пункт выбран (клик, Enter или Пробел). event.preventDefault() оставит меню открытым. */
   onSelect?: (event: Event) => void
+  /** Пункт виден, но выбрать его нельзя; стрелки его пропускают. */
   disabled?: boolean
   /** Опасное действие (удаление) — выделяется цветом. */
   danger?: boolean
+  /** Значок слева. */
   icon?: ReactNode
   /** Подсказка о сочетании клавиш справа: «⌘K». Только текст — само сочетание меню не обрабатывает. */
   shortcut?: string
@@ -217,7 +232,9 @@ export function MenuItem({ onSelect, disabled, danger, icon, shortcut, className
 }
 
 export type MenuCheckboxItemProps = Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> & {
+  /** Отмечен ли пункт. */
   checked: boolean
+  /** Вызывается с новым состоянием. */
   onCheckedChange: (checked: boolean) => void
   disabled?: boolean
 }

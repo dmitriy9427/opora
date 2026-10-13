@@ -34,10 +34,15 @@ const useTabs = (name: string) => {
 }
 
 export type TabsProps = Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> & {
+  /** Выбранная вкладка (управляемый режим). */
   value?: string
+  /** Вкладка, выбранная при первом показе. Задайте её: иначе не выбрана ни одна. */
   defaultValue?: string
+  /** Вызывается со значением новой вкладки. */
   onValueChange?: (value: string) => void
+  /** Вкладки в строку или столбцом; от этого зависят клавиши-стрелки. */
   orientation?: Orientation
+  /** automatic — вкладка открывается при фокусе; manual — только по Enter или Пробелу. */
   activation?: 'automatic' | 'manual'
 }
 
@@ -77,7 +82,11 @@ export function TabList({ className, onKeyDown, ...props }: HTMLAttributes<HTMLD
   )
 }
 
-export type TabProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value'> & { value: string; children: ReactNode }
+export type TabProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value'> & {
+  /** Значение вкладки — то же, что у её TabPanel. */
+  value: string
+  children: ReactNode
+}
 
 export function Tab({ value, className, onClick, disabled, ...props }: TabProps) {
   const tabs = useTabs('Tab')
@@ -102,6 +111,7 @@ export function Tab({ value, className, onClick, disabled, ...props }: TabProps)
 }
 
 export type TabPanelProps = HTMLAttributes<HTMLDivElement> & {
+  /** Значение вкладки, которой принадлежит панель. */
   value: string
   /** Оставлять содержимое неактивной панели в DOM (сохраняет состояние, прокрутку, введённый текст). */
   keepMounted?: boolean

@@ -52,9 +52,13 @@ const useDialog = (name: string) => {
 }
 
 export type DialogProps = {
+  /** Открыт ли диалог (управляемый режим). */
   open?: boolean
+  /** Открыть при первом показе (неуправляемый режим). */
   defaultOpen?: boolean
+  /** Вызывается, когда диалог хочет открыться или закрыться. */
   onOpenChange?: (open: boolean) => void
+  /** DialogTrigger и DialogContent. */
   children: ReactNode
 }
 
@@ -103,7 +107,9 @@ export function DialogClose({ asChild = false, onClick, ...props }: TriggerProps
 export type DialogContentProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'role'> & {
   /** Заголовок окна. Обязателен: без названия скринридер объявит просто «диалог». */
   title: ReactNode
+  /** Пояснение под заголовком; скринридер зачитает его при открытии. */
   description?: ReactNode
+  /** Ширина окна: 384, 480 или 704 px. */
   size?: 'sm' | 'md' | 'lg'
   /**
    * alertdialog — окно, требующее ответа («Удалить файл?»). Не закрывается

@@ -804,5 +804,5 @@ globalThis.ResizeObserver ??= class { observe() {} unobserve() {} disconnect() {
 загрузки файлов. Это учебная библиотека из 16 базовых компонентов.
 
 **Где посмотреть вживую?**
-https://dmitriy9427.github.io/opora/ — у каждого компонента примеры, вкладка Controls и
-проверка доступности.
+https://dmitriy9427.github.io/opora/ — у каждого компонента страница Docs (описание, таблица
+пропсов, примеры с кодом), вкладка Controls и проверка доступности.

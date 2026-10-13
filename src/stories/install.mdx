@@ -1,0 +1,102 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Опора/Установка" />
+
+# Установка и подключение
+
+## 1. Установить
+
+```bash
+npm install opora-ui
+```
+
+Нужен **React 19**. Других зависимостей нет.
+
+## 2. Подключить стили
+
+Один раз, в корне приложения:
+
+```tsx
+import 'opora-ui/styles.css'
+```
+
+Это все компоненты, токены и обе темы — 7,6 КБ в сжатом виде.
+
+### Или по частям
+
+```tsx
+import 'opora-ui/css/base.css' // обязательно и первым: токены, темы
+import 'opora-ui/css/button.css'
+import 'opora-ui/css/dialog.css'
+```
+
+Имя файла — имя компонента: `button`, `badge`, `spinner`, `field` (для `Field`, `Input`, `Textarea`),
+`checkbox`, `switch`, `radio`, `select`, `tabs`, `accordion`, `dialog`, `popover`, `menu`, `tooltip`, `toast`.
+
+## 3. Использовать
+
+```tsx
+import { Button, Field, Input, Toaster, toast } from 'opora-ui'
+
+export function App() {
+  return (
+    <>
+      <Field label="Почта">
+        <Input type="email" />
+      </Field>
+      <Button variant="primary" onClick={() => toast.success('Сохранено')}>
+        Сохранить
+      </Button>
+      <Toaster />
+    </>
+  )
+}
+```
+
+`<Toaster />` нужен, только если вызываете `toast()`; ставится один раз.
+
+## Попадёт ли в сборку вся библиотека?
+
+Нет. Импортируйте как обычно — `import { Button } from 'opora-ui'` — и сборщик приложения
+выбросит всё остальное.
+
+| Что импортировано                      | Код библиотеки в сборке (gzip) |
+| -------------------------------------- | ------------------------------ |
+| только `Button`                        | 0,8 КБ                         |
+| `Button`, `Field`, `Input`, `Checkbox` | 1,4 КБ                         |
+| только `Dialog`                        | 2,7 КБ                         |
+| вся библиотека                         | 9,4 КБ                         |
+
+## Next.js
+
+```tsx
+// app/layout.tsx
+import 'opora-ui/styles.css'
+```
+
+Компоненты уже помечены `'use client'`. Обработчики (`onClick`, `onValueChange`) передавайте из
+своих клиентских компонентов.
+
+## Как читать страницы компонентов
+
+Слева — компоненты по группам. У каждого:
+
+- **Docs** — описание: когда использовать, как импортировать, клавиатура, на что обратить внимание;
+  ниже — таблица пропсов и примеры **с кодом**;
+- отдельные примеры — их можно открыть на весь экран;
+- вкладка **Controls** (внизу) — менять пропсы и смотреть результат;
+- вкладка **Accessibility** — автоматическая проверка доступности примера;
+- переключатель **темы** — в верхней панели.
+
+## Общие правила
+
+Они одинаковы у всех компонентов:
+
+- работают все атрибуты нативного элемента (`onClick`, `disabled`, `aria-label`, `data-*`…);
+- `className` добавляется к классу библиотеки, а не заменяет его;
+- состояние — либо у компонента (`defaultValue`, `defaultOpen`), либо у вас
+  (`value` + `onValueChange`, `open` + `onOpenChange`);
+- `asChild` отдаёт вид и поведение вашему элементу: `<Button asChild><a href="…">…</a></Button>`.
+
+Полное руководство с рецептами — в
+[репозитории](https://github.com/dmitriy9427/opora/blob/main/docs/usage.md).

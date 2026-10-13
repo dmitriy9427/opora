@@ -95,8 +95,11 @@ export function Accordion(props: AccordionProps) {
 }
 
 export type AccordionItemProps = Omit<HTMLAttributes<HTMLDivElement>, 'title'> & {
+  /** Значение секции — по нему её открывают и закрывают. */
   value: string
+  /** Заголовок секции (текст кнопки). */
   title: ReactNode
+  /** Секцию нельзя открыть. */
   disabled?: boolean
 }
 

@@ -1,131 +1,107 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { useState } from 'react'
 
 import { Button } from '../button/button'
 import { Checkbox } from '../checkbox/checkbox'
 import { Radio, RadioGroup } from '../radio/radio'
 import { Select, SelectOption } from '../select/select'
-import { Switch } from '../switch/switch'
 import { toast } from '../toast/toast'
 import { Field, Input, Textarea } from './field'
 
 const meta = {
-  title: 'Компоненты/Формы',
+  title: 'Формы/Field, Input, Textarea',
   component: Field,
-  parameters: { controls: { disable: true } },
-} satisfies Meta<typeof Field>
-export default meta
-type Story = StoryObj
+  subcomponents: { Input, Textarea },
+  parameters: {
+    docs: {
+      description: {
+        component: `
+\`Field\` — обёртка поля: подпись, подсказка и ошибка. Внутрь кладётся \`Input\`, \`Textarea\` или \`Select\`.
 
-/** Подпись, подсказка и ошибка связаны с полем: кликните по подписи или включите скринридер. */
-export const Fields: Story = {
-  name: 'Field, Input, Textarea',
-  render: () => (
+\`\`\`tsx
+import { Field, Input, Textarea } from 'opora-ui'
+
+<Field label="Почта" hint="Пришлём чек" error={errors.email} required>
+  <Input type="email" name="email" />
+</Field>
+\`\`\`
+
+**Что \`Field\` делает за вас**
+
+- связывает подпись с полем — клик по подписи ставит курсор; \`id\` придумывать не нужно;
+- подсказку и ошибку скринридер зачитывает вместе с полем;
+- при ошибке поле помечается как неверное, а текст ошибки объявляется сразу при появлении.
+
+**\`Input\` и \`Textarea\`** принимают все атрибуты \`<input>\` и \`<textarea>\`: \`value\`, \`defaultValue\`,
+\`onChange\`, \`name\`, \`type\`, \`placeholder\`, \`maxLength\`…
+
+Поле без \`Field\` (например, поиск в шапке) должно иметь \`aria-label\`.
+`,
+      },
+    },
+    controls: { exclude: ['children'] },
+  },
+  args: { label: 'Почта', hint: 'На неё придёт чек', error: '', required: false, disabled: false, children: null },
+  render: (args) => (
     <div className="sb-col">
-      <Field label="Почта" hint="На неё придёт чек" required>
+      <Field {...args}>
         <Input type="email" placeholder="name@example.com" />
       </Field>
-      <Field label="Пароль" error="Не короче 8 символов">
+    </div>
+  ),
+} satisfies Meta<typeof Field>
+export default meta
+type Story = StoryObj<typeof meta>
+
+/** Впишите текст в `error` на вкладке Controls — поле станет красным, а ошибка появится под ним. */
+export const Playground: Story = {}
+
+export const States: Story = {
+  name: 'Состояния',
+  render: () => (
+    <div className="sb-col">
+      <Field label="Обычное" hint="С подсказкой">
+        <Input placeholder="Текст" />
+      </Field>
+      <Field label="Обязательное" required>
+        <Input />
+      </Field>
+      <Field label="С ошибкой" error="Не короче 8 символов">
         <Input type="password" defaultValue="12345" />
       </Field>
-      <Field label="Комментарий">
-        <Textarea placeholder="Необязательно" />
-      </Field>
-      <Field label="Промокод" disabled>
+      <Field label="Недоступное" disabled>
         <Input defaultValue="OPORA" />
       </Field>
     </div>
   ),
 }
 
-export const Checkboxes: Story = {
-  name: 'Checkbox и Switch',
-  render: function Render() {
-    const [items, setItems] = useState([true, false, false])
-    const all = items.every(Boolean)
-    const some = items.some(Boolean)
-    return (
-      <div className="sb-col">
-        {/* «Частично выбран»: родительский флажок отражает состояние дочерних. */}
-        <Checkbox checked={all} indeterminate={some && !all} onChange={(event) => setItems(items.map(() => event.target.checked))}>
-          Все уведомления
-        </Checkbox>
-        <div className="sb-col" style={{ gap: '0.5rem', paddingLeft: '1.85rem' }}>
-          {['Заказы', 'Отзывы', 'Новости'].map((label, i) => (
-            <Checkbox
-              key={label}
-              checked={items[i]}
-              onChange={(event) => setItems(items.map((value, j) => (j === i ? event.target.checked : value)))}
-            >
-              {label}
-            </Checkbox>
-          ))}
-        </div>
-        <Switch defaultChecked>Тёмная тема по расписанию</Switch>
-        <Switch disabled>Недоступная настройка</Switch>
-      </div>
-    )
-  },
-}
-
-/** Внутри группы вариант переключают стрелки, Tab проходит группу за одно нажатие. */
-export const Radios: Story = {
-  name: 'RadioGroup',
+export const Sizes: Story = {
+  name: 'Размеры Input',
   render: () => (
     <div className="sb-col">
-      <RadioGroup label="Доставка" defaultValue="courier" required>
-        <Radio value="courier">Курьер — завтра</Radio>
-        <Radio value="pickup">Самовывоз — сегодня</Radio>
-        <Radio value="post" disabled>
-          Почта — недоступно
-        </Radio>
-      </RadioGroup>
-      <RadioGroup label="Размер" orientation="horizontal" error="Выберите размер">
-        <Radio value="s">S</Radio>
-        <Radio value="m">M</Radio>
-        <Radio value="l">L</Radio>
-      </RadioGroup>
+      <Input size="sm" aria-label="Маленькое" placeholder="sm" />
+      <Input size="md" aria-label="Среднее" placeholder="md" />
+      <Input size="lg" aria-label="Большое" placeholder="lg" />
     </div>
   ),
 }
 
-/** Откройте список и попробуйте клавиатуру: стрелки, Home/End, буквы, Enter, Escape. */
-export const Selects: Story = {
-  name: 'Select',
+export const TextareaStory: Story = {
+  name: 'Textarea',
   render: () => (
     <div className="sb-col">
-      <Field label="Город" hint="Попробуйте набрать «мо» при открытом списке">
-        <Select placeholder="Выберите город">
-          {[
-            'Москва',
-            'Мурманск',
-            'Санкт-Петербург',
-            'Казань',
-            'Новосибирск',
-            'Екатеринбург',
-            'Нижний Новгород',
-            'Самара',
-            'Калининград',
-            'Владивосток',
-          ].map((city) => (
-            <SelectOption key={city} value={city} disabled={city === 'Казань'}>
-              {city}
-            </SelectOption>
-          ))}
-        </Select>
-      </Field>
-      <Field label="Роль" error="Выберите роль">
-        <Select>
-          <SelectOption value="admin">Администратор</SelectOption>
-          <SelectOption value="manager">Менеджер</SelectOption>
-        </Select>
+      <Field label="Комментарий" hint="Необязательно">
+        <Textarea rows={4} placeholder="Что важно знать курьеру" />
       </Field>
     </div>
   ),
 }
 
-/** Все элементы — настоящие поля формы: значения собирает обычный FormData, без состояния React. */
-export const NativeForm: Story = {
+/**
+ * Все элементы — настоящие поля формы. Значения собирает обычный `FormData`,
+ * без единой строки состояния React. Нажмите «Отправить».
+ */
+export const WholeForm: Story = {
   name: 'Форма целиком',
   render: () => (
     <form
@@ -137,7 +113,7 @@ export const NativeForm: Story = {
       }}
     >
       <Field label="Имя" required>
-        <Input name="name" defaultValue="Дмитрий" />
+        <Input name="name" defaultValue="Дмитрий" required />
       </Field>
       <Field label="Тариф">
         <Select name="plan" defaultValue="pro">

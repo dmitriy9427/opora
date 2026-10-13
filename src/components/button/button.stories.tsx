@@ -1,16 +1,47 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Badge } from '../badge/badge'
-import { Spinner } from '../spinner/spinner'
 import { Button } from './button'
 
 const meta = {
-  title: 'Компоненты/Button',
+  title: 'Действия/Button',
   component: Button,
-  args: { children: 'Сохранить', variant: 'primary', size: 'md', loading: false, disabled: false },
+  parameters: {
+    docs: {
+      description: {
+        component: `
+Кнопка. Принимает все атрибуты \`<button>\`: \`onClick\`, \`disabled\`, \`type\`, \`aria-label\`…
+
+\`\`\`tsx
+import { Button } from 'opora-ui'
+
+<Button variant="primary" onClick={save}>Сохранить</Button>
+\`\`\`
+
+**Как выбирать вариант**
+
+| Вариант | Когда |
+| --- | --- |
+| \`primary\` | главное действие экрана — обычно одно |
+| \`secondary\` | остальные действия (по умолчанию) |
+| \`ghost\` | второстепенное: «Отмена», кнопки-значки в строках |
+| \`danger\` | необратимое: удаление |
+
+**Важно**
+
+- \`type\` по умолчанию — \`"button"\`. Для отправки формы укажите \`type="submit"\`.
+- Кнопке из одного значка (\`iconOnly\`) обязателен \`aria-label\` — иначе скринридер скажет просто «кнопка».
+- \`loading\` не выключает кнопку (\`disabled\`), а оставляет её в фокусе: человек с клавиатурой не «теряет место».
+`,
+      },
+    },
+  },
+  args: { children: 'Сохранить', variant: 'primary', size: 'md', loading: false, disabled: false, iconOnly: false },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['primary', 'secondary', 'ghost', 'danger'] },
-    size: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    variant: { control: 'inline-radio' },
+    size: { control: 'inline-radio' },
+    icon: { control: false },
+    asChild: { control: false },
+    ref: { table: { disable: true } },
   },
 } satisfies Meta<typeof Button>
 export default meta
@@ -22,10 +53,11 @@ const Trash = () => (
   </svg>
 )
 
-/** Меняйте пропсы на вкладке Controls. */
-export const Playground: Story = {}
+/** Меняйте пропсы на вкладке **Controls** внизу. */
+export const Playground: Story = { parameters: { docs: { source: { type: 'dynamic' } } } }
 
 export const Variants: Story = {
+  name: 'Варианты',
   render: () => (
     <div className="sb-row">
       <Button variant="primary">Основная</Button>
@@ -36,7 +68,9 @@ export const Variants: Story = {
   ),
 }
 
+/** Высота совпадает с высотой `Input` и `Select` того же размера — в одном ряду они стоят ровно. */
 export const Sizes: Story = {
+  name: 'Размеры',
   render: () => (
     <div className="sb-row">
       <Button size="sm">Маленькая</Button>
@@ -46,24 +80,38 @@ export const Sizes: Story = {
   ),
 }
 
-/** `loading` не убирает кнопку из обхода клавишей Tab: попробуйте дойти до неё с клавиатуры. */
-export const States: Story = {
+/** Пока идёт запрос: индикатор, нажатия не выполняются. Дойдите до кнопки клавишей Tab — она в обходе. */
+export const Loading: Story = {
+  name: 'Загрузка и недоступность',
   render: () => (
     <div className="sb-row">
       <Button variant="primary" loading>
         Сохраняем
       </Button>
       <Button disabled>Недоступна</Button>
-      <Button icon={<Trash />}>Со значком</Button>
+    </div>
+  ),
+}
+
+/** Значок — любой SVG; размер подстроится под текст. У кнопки без текста обязателен `aria-label`. */
+export const WithIcon: Story = {
+  name: 'Со значком',
+  render: () => (
+    <div className="sb-row">
+      <Button icon={<Trash />}>Удалить</Button>
       <Button iconOnly aria-label="Удалить">
+        <Trash />
+      </Button>
+      <Button iconOnly variant="ghost" size="sm" aria-label="Удалить">
         <Trash />
       </Button>
     </div>
   ),
 }
 
-/** `asChild` отдаёт вид кнопки ссылке: в DOM остаётся `<a>`, без вложенного `<button>`. */
+/** `asChild` отдаёт вид кнопки ребёнку: в разметке остаётся настоящая ссылка `<a>`, без вложенного `<button>`. */
 export const AsLink: Story = {
+  name: 'Ссылка с видом кнопки',
   render: () => (
     <Button asChild variant="primary">
       <a href="https://github.com/dmitriy9427/opora">Открыть репозиторий</a>
@@ -71,18 +119,15 @@ export const AsLink: Story = {
   ),
 }
 
-export const BadgesAndSpinner: Story = {
-  name: 'Badge и Spinner',
+/** В форме: одна кнопка отправляет, вторая — нет. */
+export const InForm: Story = {
+  name: 'В форме',
   render: () => (
-    <div className="sb-row">
-      <Badge>Черновик</Badge>
-      <Badge tone="accent">Новое</Badge>
-      <Badge tone="success">Оплачен</Badge>
-      <Badge tone="warning">Ожидает</Badge>
-      <Badge tone="danger">Отменён</Badge>
-      <Spinner size="sm" />
-      <Spinner />
-      <Spinner size="lg" />
-    </div>
+    <form className="sb-row" onSubmit={(event) => event.preventDefault()}>
+      <Button>Отмена</Button>
+      <Button type="submit" variant="primary">
+        Отправить
+      </Button>
+    </form>
   ),
 }

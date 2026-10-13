@@ -3,27 +3,79 @@ import { useState } from 'react'
 
 import { Button } from '../button/button'
 import { Field, Input } from '../field/field'
-import { Menu, MenuCheckboxItem, MenuContent, MenuGroup, MenuItem, MenuSeparator, MenuTrigger } from '../menu/menu'
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '../popover/popover'
 import { Select, SelectOption } from '../select/select'
 import { toast } from '../toast/toast'
-import { Tooltip } from '../tooltip/tooltip'
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from './dialog'
 
 const meta = {
-  title: 'Компоненты/Всплывающие',
-  component: Dialog,
-  parameters: { controls: { disable: true } },
-} satisfies Meta<typeof Dialog>
+  title: 'Всплывающие/Dialog',
+  component: DialogContent,
+  subcomponents: { Dialog, DialogTrigger, DialogClose },
+  parameters: {
+    docs: {
+      description: {
+        component: `
+Модальное окно: пока оно открыто, остальная страница недоступна.
+
+\`\`\`tsx
+import { Button, Dialog, DialogClose, DialogContent, DialogTrigger } from 'opora-ui'
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="primary">Новый проект</Button>
+  </DialogTrigger>
+  <DialogContent
+    title="Новый проект"
+    description="Название можно изменить позже."
+    footer={
+      <>
+        <DialogClose asChild><Button>Отмена</Button></DialogClose>
+        <Button variant="primary" onClick={create}>Создать</Button>
+      </>
+    }
+  >
+    …содержимое…
+  </DialogContent>
+</Dialog>
+\`\`\`
+
+**Части**
+
+| Часть | Что делает |
+| --- | --- |
+| \`Dialog\` | хранит состояние «открыт / закрыт»: \`open\`, \`defaultOpen\`, \`onOpenChange\` |
+| \`DialogTrigger\` | кнопка, открывающая окно. С \`asChild\` — ваша кнопка |
+| \`DialogContent\` | само окно; его пропсы — в таблице ниже |
+| \`DialogClose\` | кнопка, закрывающая окно («Отмена», «Готово») |
+
+**Поведение — из коробки**
+
+- при открытии фокус уходит внутрь (на элемент с \`data-autofocus\` или на первый доступный);
+- Tab ходит по кругу внутри окна;
+- Escape, крестик и клик по затемнению закрывают;
+- после закрытия фокус возвращается на кнопку, открывшую окно;
+- страница под окном не прокручивается и недоступна скринридеру.
+
+**Важно**
+
+- \`title\` обязателен — это название окна для скринридера.
+- Для подтверждений («Удалить?») используйте \`role="alertdialog"\`: клик мимо такое окно не закрывает.
+- Открыть окно без кнопки-триггера — управляемым режимом: \`<Dialog open={open} onOpenChange={setOpen}>\`.
+`,
+      },
+    },
+    controls: { disable: true },
+  },
+} satisfies Meta<typeof DialogContent>
 export default meta
 type Story = StoryObj
 
 /**
- * Откройте и нажимайте Tab: фокус ходит по кругу внутри окна. Escape закрывает и
- * возвращает фокус на кнопку. Внутри — селект: его Escape закрывает только список.
+ * Откройте и нажимайте Tab — фокус не выходит из окна. Внутри селект: его Escape закрывает
+ * только список, второй Escape — окно. `data-autofocus` ставит курсор сразу в поле.
  */
-export const DialogStory: Story = {
-  name: 'Dialog',
+export const Basic: Story = {
+  name: 'С формой',
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
@@ -62,9 +114,12 @@ export const DialogStory: Story = {
   ),
 }
 
-/** `role="alertdialog"` — нужен явный ответ: клик по затемнению окно не закрывает. */
-export const AlertDialogStory: Story = {
-  name: 'Dialog: подтверждение',
+/**
+ * `role="alertdialog"` — нужен явный ответ: клик по затемнению окно не закрывает. Фокус по
+ * умолчанию стоит на безопасной кнопке (`data-autofocus`), чтобы случайный Enter ничего не удалил.
+ */
+export const Confirm: Story = {
+  name: 'Подтверждение',
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
@@ -73,22 +128,16 @@ export const AlertDialogStory: Story = {
       <DialogContent
         role="alertdialog"
         size="sm"
+        hideClose
         title="Удалить проект «Опора»?"
         description="Все файлы и история будут удалены без возможности восстановления."
-        hideClose
         footer={
           <>
             <DialogClose asChild>
-              {/* Фокус по умолчанию — на безопасном действии. */}
               <Button data-autofocus>Не удалять</Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button
-                variant="danger"
-                onClick={() =>
-                  toast('Проект удалён', { action: { label: 'Вернуть', onClick: () => toast.success('Проект восстановлен') } })
-                }
-              >
+              <Button variant="danger" onClick={() => toast('Проект удалён')}>
                 Удалить
               </Button>
             </DialogClose>
@@ -99,118 +148,58 @@ export const AlertDialogStory: Story = {
   ),
 }
 
-/** На кнопке: ↓ открывает с первого пункта, ↑ — с последнего. В меню: стрелки, буквы, Enter, Escape. */
-export const MenuStory: Story = {
-  name: 'Menu',
+/**
+ * Управляемый режим: окно закрывается из кода — здесь после «отправки» формы.
+ * Так же окно можно открыть без кнопки-триггера.
+ */
+export const Controlled: Story = {
+  name: 'Управляемый: закрыть после отправки',
   render: function Render() {
-    const [grid, setGrid] = useState(true)
-    const [rulers, setRulers] = useState(false)
+    const [open, setOpen] = useState(false)
+    const [saving, setSaving] = useState(false)
     return (
-      <Menu>
-        <MenuTrigger asChild>
-          <Button>Действия</Button>
-        </MenuTrigger>
-        <MenuContent>
-          <MenuItem shortcut="F2" onSelect={() => toast('Переименование')}>
-            Переименовать
-          </MenuItem>
-          <MenuItem onSelect={() => toast('Копия создана')}>Дублировать</MenuItem>
-          <MenuItem disabled>Переместить</MenuItem>
-          <MenuSeparator />
-          <MenuGroup label="Вид">
-            <MenuCheckboxItem checked={grid} onCheckedChange={setGrid}>
-              Сетка
-            </MenuCheckboxItem>
-            <MenuCheckboxItem checked={rulers} onCheckedChange={setRulers}>
-              Линейки
-            </MenuCheckboxItem>
-          </MenuGroup>
-          <MenuSeparator />
-          <MenuItem danger shortcut="⌫" onSelect={() => toast.error('Удалено')}>
-            Удалить
-          </MenuItem>
-        </MenuContent>
-      </Menu>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button>Пригласить</Button>
+        </DialogTrigger>
+        <DialogContent title="Пригласить участника">
+          <form
+            style={{ display: 'grid', gap: '1rem' }}
+            onSubmit={(event) => {
+              event.preventDefault()
+              setSaving(true)
+              setTimeout(() => {
+                setSaving(false)
+                setOpen(false)
+                toast.success('Приглашение отправлено')
+              }, 900)
+            }}
+          >
+            <Field label="Почта" required>
+              <Input type="email" required data-autofocus placeholder="name@example.com" />
+            </Field>
+            <Button type="submit" variant="primary" loading={saving}>
+              Отправить
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     )
   },
 }
 
-/** Немодальная панель: страница остаётся доступной, клик мимо закрывает. */
-export const PopoverStory: Story = {
-  name: 'Popover',
-  render: () => (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button>Фильтры</Button>
-      </PopoverTrigger>
-      <PopoverContent aria-label="Фильтры" style={{ width: '16rem' }}>
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
-          <Field label="Цена от">
-            <Input size="sm" inputMode="numeric" placeholder="0" />
-          </Field>
-          <Field label="Цена до">
-            <Input size="sm" inputMode="numeric" placeholder="10 000" />
-          </Field>
-          <PopoverClose asChild>
-            <Button variant="primary" size="sm">
-              Применить
-            </Button>
-          </PopoverClose>
-        </div>
-      </PopoverContent>
-    </Popover>
-  ),
-}
-
-/** Появляется при наведении (с задержкой) и при фокусе с клавиатуры (сразу). Escape скрывает. */
-export const TooltipStory: Story = {
-  name: 'Tooltip',
+export const Sizes: Story = {
+  name: 'Размеры',
   render: () => (
     <div className="sb-row">
-      <Tooltip content="Сохранить изменения">
-        <Button>Наведите</Button>
-      </Tooltip>
-      <Tooltip content="Подсказка снизу" placement="bottom">
-        <Button>Снизу</Button>
-      </Tooltip>
-      <Tooltip content="Удалить навсегда">
-        <Button iconOnly aria-label="Удалить">
-          ×
-        </Button>
-      </Tooltip>
-    </div>
-  ),
-}
-
-/** Наведите курсор на уведомление — таймер остановится. Ошибка объявляется скринридером сразу. */
-export const ToastStory: Story = {
-  name: 'Toast',
-  render: () => (
-    <div className="sb-row">
-      <Button onClick={() => toast('Черновик сохранён')}>Обычный</Button>
-      <Button onClick={() => toast.success('Оплата прошла', { description: 'Чек отправлен на почту' })}>Успех</Button>
-      <Button onClick={() => toast.warning('Заканчивается место', { description: 'Осталось 200 МБ' })}>Предупреждение</Button>
-      <Button
-        onClick={() =>
-          toast.error('Не удалось сохранить', {
-            description: 'Проверьте соединение',
-            action: { label: 'Повторить', onClick: () => toast.success('Сохранено') },
-          })
-        }
-      >
-        Ошибка с действием
-      </Button>
-      <Button
-        onClick={() => {
-          toast('Загружаем файл…', { id: 'upload', duration: Infinity })
-          setTimeout(() => toast.success('Файл загружен', { id: 'upload' }), 1800)
-        }}
-      >
-        Обновление по id
-      </Button>
-      <Button variant="ghost" onClick={() => toast.dismiss()}>
-        Закрыть все
-      </Button>
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Dialog key={size}>
+          <DialogTrigger asChild>
+            <Button>{size}</Button>
+          </DialogTrigger>
+          <DialogContent size={size} title={`Окно ${size}`} description="Ширина ограничена, на узком экране окно занимает всю ширину." />
+        </Dialog>
+      ))}
     </div>
   ),
 }

@@ -37,12 +37,17 @@ type FieldContextValue = {
 const FieldContext = createContext<FieldContextValue | null>(null)
 
 export type FieldProps = Omit<HTMLAttributes<HTMLDivElement>, 'children'> & {
+  /** Подпись поля. Клик по ней ставит курсор в поле. */
   label: ReactNode
+  /** Подсказка под полем; скринридер зачитает её после подписи. */
   hint?: ReactNode
   /** Текст ошибки. Есть ошибка — поле помечается как неверное. */
   error?: ReactNode
+  /** Обязательное поле: звёздочка у подписи и атрибут required у поля. */
   required?: boolean
+  /** Выключить поле внутри. */
   disabled?: boolean
+  /** Одно поле: Input, Textarea или Select. */
   children: ReactNode
 }
 
@@ -100,6 +105,7 @@ export function useFieldControl<
 }
 
 export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> & {
+  /** Высота поля: 32, 40 или 48 px. */
   size?: 'sm' | 'md' | 'lg'
   ref?: Ref<HTMLInputElement>
 }
