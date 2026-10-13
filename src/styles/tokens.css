@@ -1,0 +1,222 @@
+/*
+ * Опора — токены и слои.
+ *
+ * ─── Слои (@layer) ──────────────────────────────────────────────────────────
+ * Все стили библиотеки лежат в каскадных слоях. Порядок слоёв объявлен один
+ * раз, здесь. Главное свойство: ЛЮБОЙ стиль приложения, написанный вне слоёв,
+ * сильнее любого стиля в слое — независимо от специфичности селектора.
+ *
+ *   .my-button { border-radius: 0 }        ← победит .op-button из библиотеки
+ *
+ * Не нужны ни !important, ни «селектор подлиннее». Библиотека никогда не
+ * мешает приложению.
+ *
+ * ─── Токены ─────────────────────────────────────────────────────────────────
+ * Компоненты не знают цветов — только имена ролей: «фон поверхности»,
+ * «акцент», «граница». Значения ролей — CSS-переменные на :root. Поменять
+ * тему = переопределить переменные:
+ *
+ *   :root { --op-accent: #0a7; --op-radius: 4px }
+ *
+ * Тёмная тема — те же переменные с другими значениями: системная
+ * (prefers-color-scheme) или принудительная (data-theme="dark" на любом
+ * предке, например на <html>).
+ */
+@layer opora.tokens, opora.base, opora.components;
+
+@layer opora.tokens {
+  :root,
+  [data-theme='light'] {
+    color-scheme: light;
+
+    /* Поверхности и текст */
+    --op-bg: #ffffff;
+    --op-surface: #ffffff;
+    --op-surface-raised: #ffffff;
+    --op-muted: #f4f4f6;
+    --op-hover: #ededf1;
+    --op-text: #17171c;
+    --op-text-muted: #62636d;
+    --op-border: #dcdce3;
+    --op-border-strong: #b9bac6;
+
+    /* Акцент и состояния */
+    --op-accent: #4f46e5;
+    --op-accent-hover: #4338ca;
+    --op-accent-text: #ffffff;
+    --op-accent-soft: #eef0ff;
+    --op-danger: #c4202d;
+    --op-danger-hover: #a81a26;
+    --op-danger-text: #ffffff;
+    --op-danger-soft: #fdecee;
+    --op-success: #0f6b31;
+    --op-success-soft: #e6f6ec;
+    --op-warning: #8a4f00;
+    --op-warning-soft: #fdf3dc;
+
+    --op-overlay: rgb(15 15 25 / 45%);
+    --op-shadow-sm: 0 1px 2px rgb(15 15 25 / 8%);
+    --op-shadow-md: 0 6px 20px rgb(15 15 25 / 12%), 0 1px 3px rgb(15 15 25 / 8%);
+    --op-shadow-lg: 0 20px 50px rgb(15 15 25 / 22%), 0 2px 6px rgb(15 15 25 / 10%);
+
+    /* Фокус: одно кольцо на всю библиотеку */
+    --op-focus: #4f46e5;
+    --op-focus-ring: 0 0 0 2px var(--op-bg), 0 0 0 4px var(--op-focus);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      color-scheme: dark;
+      --op-bg: #121217;
+      --op-surface: #1a1a21;
+      --op-surface-raised: #22222b;
+      --op-muted: #24242d;
+      --op-hover: #2c2c37;
+      --op-text: #f1f1f5;
+      --op-text-muted: #a3a4b1;
+      --op-border: #33343f;
+      --op-border-strong: #4d4e5c;
+      --op-accent: #818cf8;
+      --op-accent-hover: #9aa3fb;
+      --op-accent-text: #14143a;
+      --op-accent-soft: #25264a;
+      --op-danger: #f87179;
+      --op-danger-hover: #fb8d93;
+      --op-danger-text: #3b0b10;
+      --op-danger-soft: #3d1c20;
+      --op-success: #4ecb7b;
+      --op-success-soft: #173323;
+      --op-warning: #f0b445;
+      --op-warning-soft: #3a2c10;
+      --op-overlay: rgb(0 0 0 / 60%);
+      --op-shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+      --op-shadow-md: 0 6px 20px rgb(0 0 0 / 45%), 0 1px 3px rgb(0 0 0 / 40%);
+      --op-shadow-lg: 0 20px 50px rgb(0 0 0 / 60%), 0 2px 6px rgb(0 0 0 / 40%);
+      --op-focus: #a5b0ff;
+    }
+  }
+
+  /* Те же значения ещё раз — для принудительной тёмной темы. В CSS нет способа «переиспользовать блок». */
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --op-bg: #121217;
+    --op-surface: #1a1a21;
+    --op-surface-raised: #22222b;
+    --op-muted: #24242d;
+    --op-hover: #2c2c37;
+    --op-text: #f1f1f5;
+    --op-text-muted: #a3a4b1;
+    --op-border: #33343f;
+    --op-border-strong: #4d4e5c;
+    --op-accent: #818cf8;
+    --op-accent-hover: #9aa3fb;
+    --op-accent-text: #14143a;
+    --op-accent-soft: #25264a;
+    --op-danger: #f87179;
+    --op-danger-hover: #fb8d93;
+    --op-danger-text: #3b0b10;
+    --op-danger-soft: #3d1c20;
+    --op-success: #4ecb7b;
+    --op-success-soft: #173323;
+    --op-warning: #f0b445;
+    --op-warning-soft: #3a2c10;
+    --op-overlay: rgb(0 0 0 / 60%);
+    --op-shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+    --op-shadow-md: 0 6px 20px rgb(0 0 0 / 45%), 0 1px 3px rgb(0 0 0 / 40%);
+    --op-shadow-lg: 0 20px 50px rgb(0 0 0 / 60%), 0 2px 6px rgb(0 0 0 / 40%);
+    --op-focus: #a5b0ff;
+  }
+
+  :root {
+    /* Размеры не зависят от темы */
+    --op-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --op-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --op-text-xs: 0.75rem;
+    --op-text-sm: 0.875rem;
+    --op-text-md: 1rem;
+    --op-text-lg: 1.125rem;
+    --op-leading: 1.45;
+
+    --op-radius-sm: 6px;
+    --op-radius: 10px;
+    --op-radius-lg: 14px;
+    --op-radius-full: 999px;
+
+    /* Высота элементов управления: кнопка, поле и селект одного размера стоят в ряд ровно. */
+    --op-control-sm: 2rem;
+    --op-control-md: 2.5rem;
+    --op-control-lg: 3rem;
+
+    --op-duration: 160ms;
+    --op-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* Слои всплывающих элементов */
+    --op-z-overlay: 1000;
+    --op-z-popup: 1100;
+    --op-z-toast: 1200;
+  }
+}
+
+@layer opora.base {
+  /* Общая основа компонентов: у всех классов библиотеки префикс op-. */
+  :where([class^='op-'], [class*=' op-']) {
+    box-sizing: border-box;
+    font-family: var(--op-font);
+  }
+
+  :where([class^='op-'], [class*=' op-'])::before,
+  :where([class^='op-'], [class*=' op-'])::after {
+    box-sizing: border-box;
+  }
+
+  /* Скрыто от глаз, но читается скринридером. */
+  .op-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border: 0;
+    clip-path: inset(50%);
+  }
+
+  @keyframes op-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes op-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes op-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96) translateY(4px);
+    }
+  }
+  @keyframes op-pop-out {
+    to {
+      opacity: 0;
+      transform: scale(0.96) translateY(4px);
+    }
+  }
+  @keyframes op-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* «Уменьшить движение» — системная настройка: анимации почти мгновенные. */
+  @media (prefers-reduced-motion: reduce) {
+    :where([class^='op-'], [class*=' op-']),
+    :where([class^='op-'], [class*=' op-'])::before,
+    :where([class^='op-'], [class*=' op-'])::after {
+      animation-duration: 1ms !important;
+      transition-duration: 1ms !important;
+    }
+  }
+}

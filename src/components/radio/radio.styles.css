@@ -1,0 +1,76 @@
+@layer opora.components {
+  .op-radio-group {
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    color: var(--op-text);
+    border: 0;
+  }
+
+  .op-radio-group__label {
+    padding: 0;
+    margin-bottom: 0.5rem;
+    font-size: var(--op-text-sm);
+    font-weight: 500;
+  }
+
+  .op-radio-group__items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .op-radio-group[data-orientation='horizontal'] .op-radio-group__items {
+    flex-flow: row wrap;
+    gap: 0.6rem 1.25rem;
+  }
+
+  .op-radio-group .op-field__error {
+    margin-top: 0.5rem;
+  }
+
+  .op-radio {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    font-size: var(--op-text-sm);
+    line-height: 1.25rem;
+    cursor: pointer;
+  }
+
+  .op-radio[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .op-radio__input {
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: inherit;
+    opacity: 0;
+  }
+
+  .op-radio__dot {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: var(--op-surface);
+    border: 1.5px solid var(--op-border-strong);
+    border-radius: 50%;
+    transition:
+      border-color var(--op-duration),
+      border-width var(--op-duration),
+      box-shadow var(--op-duration);
+  }
+
+  /* Точка — это толстая рамка: анимируется ширина рамки, отдельный элемент не нужен. */
+  .op-radio__input:checked + .op-radio__dot {
+    border-color: var(--op-accent);
+    border-width: 0.4rem;
+  }
+  .op-radio__input:focus-visible + .op-radio__dot {
+    box-shadow: var(--op-focus-ring);
+  }
+}

@@ -1,0 +1,77 @@
+@layer opora.components {
+  .op-menu {
+    min-width: 11rem;
+    max-height: min(24rem, var(--op-available-height, 100vh));
+    padding: 0.3rem;
+    overflow-y: auto;
+    font-size: var(--op-text-sm);
+  }
+
+  .op-menu:focus {
+    outline: none;
+  }
+
+  .op-menu__item {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    min-height: 2.1rem;
+    padding: 0.3rem 0.6rem;
+    line-height: 1.3;
+    cursor: default;
+    user-select: none;
+    border-radius: var(--op-radius-sm);
+  }
+
+  /* Подсветка — по фокусу: одна и та же для мыши (наведение переносит фокус) и клавиатуры. */
+  .op-menu__item:focus {
+    outline: none;
+    background: var(--op-hover);
+  }
+
+  .op-menu__item[data-disabled] {
+    color: var(--op-text-muted);
+    opacity: 0.6;
+  }
+
+  .op-menu__item[data-danger] {
+    color: var(--op-danger);
+  }
+  .op-menu__item[data-danger]:focus {
+    background: var(--op-danger-soft);
+  }
+
+  .op-menu__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .op-menu__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  .op-menu__text {
+    flex: 1;
+  }
+
+  .op-menu__shortcut {
+    font-size: var(--op-text-xs);
+    color: var(--op-text-muted);
+  }
+
+  .op-menu__label {
+    padding: 0.4rem 0.6rem 0.2rem;
+    font-size: var(--op-text-xs);
+    font-weight: 500;
+    color: var(--op-text-muted);
+  }
+
+  .op-menu__separator {
+    height: 1px;
+    margin: 0.3rem -0.3rem;
+    background: var(--op-border);
+  }
+}

@@ -1,0 +1,31 @@
+name: Выпуск в npm
+
+# Запускается вручную: Actions → «Выпуск в npm» → Run workflow.
+# Публикует версию из package.json, если её ещё нет в npm.
+#
+# Авторизация — «доверенный издатель» (trusted publishing): npm сам проверяет, что
+# публикует именно этот репозиторий и этот файл workflow. Токенов и секретов нет.
+# Настройка — один раз на npmjs.com, см. docs/09-publishing.md.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # нужен для доверенной публикации и подписи происхождения (provenance)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      # Доверенная публикация требует свежий npm (11.5+).
+      - run: npm install -g npm@latest
+      - run: npm ci
+      # Перед публикацией npm сам запустит prepublishOnly → npm run check: сломанный пакет не уйдёт.
+      # --provenance: в npm у версии появится отметка, из какого коммита и каким workflow она собрана.
+      - run: npm publish --access public --provenance

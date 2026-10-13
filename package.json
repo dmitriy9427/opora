@@ -1,0 +1,88 @@
+{
+  "name": "opora-ui",
+  "version": "0.1.0",
+  "description": "Опора — доступные React-компоненты, написанные с нуля: диалог, меню, селект, вкладки, тосты и другие",
+  "license": "MIT",
+  "author": "Дмитрий Рябов",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmitriy9427/opora.git"
+  },
+  "homepage": "https://dmitriy9427.github.io/opora/",
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "accessibility",
+    "a11y",
+    "design-system"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "types": "./dist/index.d.ts",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "storybook dev -p 6010 --no-open",
+    "build": "vite build && tsc -p tsconfig.build.json && node scripts/fix-dts.mjs",
+    "build:storybook": "storybook build -o storybook-static",
+    "lint": "oxlint",
+    "format": "prettier --write src .storybook scripts",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "size": "node scripts/size.mjs",
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints styles.css",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build && npm run size && npm run check:package && npm run test:package",
+    "test:package": "node scripts/smoke.mjs",
+    "prepublishOnly": "npm run check",
+    "changeset": "changeset",
+    "version": "changeset version"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@changesets/cli": "^3.0.3",
+    "@storybook/addon-a11y": "^10.6.2",
+    "@storybook/addon-docs": "^10.6.2",
+    "@storybook/react-vite": "^10.6.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "axe-core": "^4.14.0",
+    "jsdom": "^29.1.1",
+    "oxlint": "^1.88.0",
+    "prettier": "^3.9.10",
+    "publint": "^0.3.25",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "storybook": "^10.6.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  }
+}

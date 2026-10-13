@@ -1,0 +1,120 @@
+@layer opora.components {
+  .op-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: var(--op-z-overlay);
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    /* Окно выше экрана — прокручивается весь слой, а не содержимое внутри маленькой рамки. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .op-dialog__backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--op-overlay);
+    animation: op-fade-in var(--op-duration) both;
+  }
+
+  .op-dialog[data-state='closed'] .op-dialog__backdrop {
+    animation-name: op-fade-out;
+  }
+
+  /* Анимация закрытия у самого слоя: по её окончанию элемент удаляется (usePresence). */
+  .op-dialog[data-state='closed'] {
+    animation: op-fade-out var(--op-duration) both;
+  }
+
+  .op-dialog__panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 30rem;
+    padding: 1.25rem;
+    color: var(--op-text);
+    background: var(--op-surface-raised);
+    border: 1px solid var(--op-border);
+    border-radius: var(--op-radius-lg);
+    box-shadow: var(--op-shadow-lg);
+    animation: op-pop-in 200ms var(--op-ease) both;
+  }
+
+  .op-dialog[data-state='closed'] .op-dialog__panel {
+    animation-name: op-pop-out;
+  }
+
+  .op-dialog__panel:focus {
+    outline: none;
+  }
+  .op-dialog__panel[data-size='sm'] {
+    max-width: 24rem;
+  }
+  .op-dialog__panel[data-size='lg'] {
+    max-width: 44rem;
+  }
+
+  .op-dialog__header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .op-dialog__title {
+    margin: 0;
+    font-size: var(--op-text-lg);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .op-dialog__close {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    margin: -0.25rem -0.25rem 0 0;
+    color: var(--op-text-muted);
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: var(--op-radius-sm);
+  }
+
+  .op-dialog__close svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .op-dialog__close:hover {
+    color: var(--op-text);
+    background: var(--op-hover);
+  }
+  .op-dialog__close:focus-visible {
+    outline: none;
+    box-shadow: var(--op-focus-ring);
+  }
+
+  .op-dialog__description {
+    margin: 0;
+    font-size: var(--op-text-sm);
+    line-height: var(--op-leading);
+    color: var(--op-text-muted);
+  }
+
+  .op-dialog__body {
+    font-size: var(--op-text-sm);
+    line-height: var(--op-leading);
+  }
+
+  .op-dialog__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+}

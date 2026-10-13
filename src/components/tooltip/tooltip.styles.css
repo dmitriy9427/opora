@@ -1,0 +1,15 @@
+@layer opora.components {
+  .op-tooltip {
+    z-index: var(--op-z-toast);
+    max-width: 16rem;
+    padding: 0.35rem 0.6rem;
+    font-size: var(--op-text-xs);
+    line-height: var(--op-leading);
+    /* Инверсия темы: тёмная плашка на светлом фоне и наоборот — подсказка всегда заметна. */
+    color: var(--op-bg);
+    background: var(--op-text);
+    border-radius: var(--op-radius-sm);
+    box-shadow: var(--op-shadow-sm);
+    animation: op-fade-in 120ms both;
+  }
+}

@@ -1,0 +1,58 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Опора/Введение" />
+
+# Опора
+
+Доступные React-компоненты, написанные с нуля — без Radix, Headless UI и других готовых основ.
+Библиотека учебная: в исходниках каждого компонента написано, **почему** он устроен так.
+
+```bash
+npm install opora-ui
+```
+
+```tsx
+import 'opora-ui/styles.css'
+import { Button, Dialog, DialogContent, DialogTrigger, Toaster, toast } from 'opora-ui'
+
+export function App() {
+  return (
+    <>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="primary">Открыть</Button>
+        </DialogTrigger>
+        <DialogContent title="Привет" description="Это модальное окно." />
+      </Dialog>
+      <Toaster />
+    </>
+  )
+}
+```
+
+## Что внутри
+
+| Группа      | Компоненты                                                                    |
+| ----------- | ----------------------------------------------------------------------------- |
+| Действия    | `Button`, `Badge`, `Spinner`                                                  |
+| Формы       | `Field`, `Input`, `Textarea`, `Checkbox`, `Switch`, `RadioGroup`, `Select`    |
+| Структура   | `Tabs`, `Accordion`                                                           |
+| Всплывающие | `Dialog`, `Popover`, `Menu`, `Tooltip`, `toast`                               |
+| Кирпичи     | `Slot`, `Portal`, `VisuallyHidden`, `useControllableState`, `computePosition` |
+
+## Как смотреть
+
+- **Клавиатурой.** Отложите мышь: Tab, стрелки, Enter, Пробел, Escape. Всё должно работать.
+- **Вкладка Accessibility** внизу — автоматическая проверка каждого примера (axe).
+- **Переключатель темы** в верхней панели — светлая и тёмная.
+- **Вкладка Controls** — пропсы компонента.
+
+## Принципы
+
+1. **Сначала нативный элемент.** Чекбокс — это `<input type="checkbox">`, оформленный через CSS.
+   Свой `role="checkbox"` потребовал бы повторить всё поведение браузера.
+2. **Клавиатура по WAI-ARIA.** У каждого составного компонента — шаблон из
+   [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/).
+3. **Управляемый и неуправляемый режим** у всего, что имеет состояние: `value` + `onValueChange` или `defaultValue`.
+4. **Стили не мешают.** Всё в каскадных слоях: любой стиль приложения сильнее стиля библиотеки.
+5. **Ни одной зависимости**, кроме React.

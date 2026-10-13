@@ -1,0 +1,100 @@
+@layer opora.components {
+  .op-select {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: var(--op-control-md);
+    padding: 0 0.6rem 0 0.75rem;
+    font: inherit;
+    font-size: var(--op-text-sm);
+    color: var(--op-text);
+    text-align: left;
+    cursor: pointer;
+    background: var(--op-surface);
+    border: 1px solid var(--op-border-strong);
+    border-radius: var(--op-radius);
+    transition:
+      border-color var(--op-duration),
+      box-shadow var(--op-duration);
+  }
+
+  .op-select[data-placeholder] .op-select__value {
+    color: var(--op-text-muted);
+  }
+
+  .op-select__value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .op-select__chevron {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--op-text-muted);
+  }
+
+  .op-select:focus-visible,
+  .op-select[aria-expanded='true'] {
+    outline: none;
+    border-color: var(--op-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--op-focus) 25%, transparent);
+  }
+
+  .op-select[aria-invalid='true'] {
+    border-color: var(--op-danger);
+  }
+  .op-select:disabled {
+    cursor: not-allowed;
+    background: var(--op-muted);
+    opacity: 0.7;
+  }
+
+  .op-select[data-size='sm'] {
+    height: var(--op-control-sm);
+    border-radius: var(--op-radius-sm);
+  }
+  .op-select[data-size='lg'] {
+    height: var(--op-control-lg);
+  }
+
+  .op-select__list {
+    /* Не выше свободного места у кнопки: переменную задаёт usePosition. */
+    max-height: min(18rem, var(--op-available-height, 100vh));
+    padding: 0.3rem;
+    overflow-y: auto;
+    font-size: var(--op-text-sm);
+  }
+
+  .op-select__option {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.1rem;
+    padding: 0.3rem 0.6rem;
+    cursor: default;
+    user-select: none;
+    border-radius: var(--op-radius-sm);
+  }
+
+  .op-select__option svg {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--op-accent);
+  }
+  .op-select__option[data-active] {
+    background: var(--op-hover);
+  }
+  .op-select__option[aria-selected='true'] {
+    font-weight: 500;
+  }
+  .op-select__option[aria-disabled='true'] {
+    color: var(--op-text-muted);
+    opacity: 0.6;
+  }
+}

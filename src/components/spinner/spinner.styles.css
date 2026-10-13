@@ -1,0 +1,29 @@
+@layer opora.components {
+  .op-spinner {
+    display: inline-block;
+    flex: none;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid currentcolor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: op-spin 0.7s linear infinite;
+  }
+
+  .op-spinner[data-size='sm'] {
+    width: 1em;
+    height: 1em;
+  }
+  .op-spinner[data-size='lg'] {
+    width: 2em;
+    height: 2em;
+    border-width: 3px;
+  }
+
+  /* Вращение — не «украшение», а сигнал «идёт работа»: при «уменьшить движение» замедляем, но не убираем. */
+  @media (prefers-reduced-motion: reduce) {
+    .op-spinner {
+      animation-duration: 2s !important;
+    }
+  }
+}

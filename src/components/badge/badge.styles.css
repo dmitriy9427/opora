@@ -1,0 +1,33 @@
+@layer opora.components {
+  .op-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    height: 1.5rem;
+    padding: 0 0.6em;
+    font-size: var(--op-text-xs);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--op-text);
+    white-space: nowrap;
+    background: var(--op-muted);
+    border-radius: var(--op-radius-full);
+  }
+
+  .op-badge[data-tone='accent'] {
+    color: var(--op-accent);
+    background: var(--op-accent-soft);
+  }
+  .op-badge[data-tone='success'] {
+    color: var(--op-success);
+    background: var(--op-success-soft);
+  }
+  .op-badge[data-tone='warning'] {
+    color: var(--op-warning);
+    background: var(--op-warning-soft);
+  }
+  .op-badge[data-tone='danger'] {
+    color: var(--op-danger);
+    background: var(--op-danger-soft);
+  }
+}

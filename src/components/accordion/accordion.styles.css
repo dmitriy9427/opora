@@ -1,0 +1,96 @@
+@layer opora.components {
+  .op-accordion {
+    color: var(--op-text);
+    border: 1px solid var(--op-border);
+    border-radius: var(--op-radius-lg);
+  }
+
+  .op-accordion__item + .op-accordion__item {
+    border-top: 1px solid var(--op-border);
+  }
+
+  .op-accordion__heading {
+    margin: 0;
+    font: inherit;
+  }
+
+  .op-accordion__trigger {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font: inherit;
+    font-size: var(--op-text-sm);
+    font-weight: 500;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: inherit;
+  }
+
+  .op-accordion__item:first-child .op-accordion__trigger {
+    border-radius: var(--op-radius-lg) var(--op-radius-lg) 0 0;
+  }
+  .op-accordion__item:last-child[data-state='closed'] .op-accordion__trigger {
+    border-radius: 0 0 var(--op-radius-lg) var(--op-radius-lg);
+  }
+
+  @media (hover: hover) {
+    .op-accordion__trigger:hover:not(:disabled) {
+      background: var(--op-muted);
+    }
+  }
+
+  .op-accordion__trigger:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .op-accordion__trigger:focus-visible {
+    outline: 2px solid var(--op-focus);
+    outline-offset: -2px;
+  }
+
+  .op-accordion__chevron {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--op-text-muted);
+    transition: transform var(--op-duration) var(--op-ease);
+  }
+
+  .op-accordion__item[data-state='open'] .op-accordion__chevron {
+    transform: rotate(180deg);
+  }
+
+  /*
+   * Плавная высота без JavaScript. Высоту «auto» анимировать нельзя, а долю сетки — можно:
+   * строка 0fr имеет нулевую высоту, 1fr — высоту содержимого.
+   */
+  .op-accordion__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 220ms var(--op-ease);
+  }
+
+  .op-accordion__item[data-state='open'] .op-accordion__panel {
+    grid-template-rows: 1fr;
+  }
+
+  /* Ребёнок сетки должен уметь сжаться до нуля: min-height: 0 и скрытое переполнение. */
+  .op-accordion__content {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .op-accordion__body {
+    padding: 0 1rem 1rem;
+    font-size: var(--op-text-sm);
+    line-height: var(--op-leading);
+    color: var(--op-text-muted);
+  }
+}

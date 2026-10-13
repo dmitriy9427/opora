@@ -1,0 +1,79 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Опора/Темы и стили" />
+
+# Темы и стили
+
+## Подключение
+
+```tsx
+import 'opora-ui/styles.css' // один раз, в корне приложения
+```
+
+## Своя тема — CSS-переменные
+
+Компоненты знают только роли: «акцент», «поверхность», «граница». Значения — переменные на `:root`:
+
+```css
+:root {
+  --op-accent: #0a8f5b;
+  --op-accent-hover: #087a4d;
+  --op-radius: 4px;
+  --op-font: 'Inter', sans-serif;
+}
+```
+
+| Переменная                                                                 | Что это                                     |
+| -------------------------------------------------------------------------- | ------------------------------------------- |
+| `--op-bg`, `--op-surface`, `--op-surface-raised`                           | фон страницы, компонентов, всплывающих окон |
+| `--op-text`, `--op-text-muted`                                             | текст и второстепенный текст                |
+| `--op-border`, `--op-border-strong`                                        | границы                                     |
+| `--op-accent`, `--op-accent-hover`, `--op-accent-text`, `--op-accent-soft` | акцент                                      |
+| `--op-danger`, `--op-success`, `--op-warning` (+ `-soft`)                  | состояния                                   |
+| `--op-focus`                                                               | кольцо фокуса                               |
+| `--op-radius-sm`, `--op-radius`, `--op-radius-lg`                          | скругления                                  |
+| `--op-control-sm`, `--op-control-md`, `--op-control-lg`                    | высота кнопок и полей                       |
+| `--op-font`, `--op-text-xs` … `--op-text-lg`                               | шрифт и размеры                             |
+
+## Тёмная тема
+
+По умолчанию следует за системой (`prefers-color-scheme`). Принудительно — атрибутом на любом предке:
+
+```html
+<html data-theme="dark"></html>
+```
+
+## Переопределить стиль компонента
+
+Стили библиотеки лежат в слоях `@layer opora.*`. Правило CSS: **стиль вне слоёв сильнее любого стиля в слое**, какой бы ни была специфичность. Поэтому хватает обычного класса:
+
+```css
+.my-button {
+  border-radius: 0;
+  text-transform: uppercase;
+}
+```
+
+```tsx
+<Button className="my-button">Ок</Button>
+```
+
+Без `!important` и без «селектора подлиннее».
+
+Состояния доступны через атрибуты:
+
+```css
+.op-button[data-variant='primary'] { … }
+.op-tabs__tab[aria-selected='true'] { … }
+.op-dialog[data-state='closed'] { … }
+```
+
+## Tailwind
+
+Tailwind 4 тоже использует слои. Чтобы утилиты побеждали стили библиотеки, объявите порядок слоёв до импортов:
+
+```css
+@layer opora.tokens, opora.base, opora.components, theme, base, components, utilities;
+@import 'opora-ui/styles.css';
+@import 'tailwindcss';
+```

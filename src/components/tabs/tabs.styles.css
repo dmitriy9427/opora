@@ -1,0 +1,99 @@
+@layer opora.components {
+  .op-tabs {
+    color: var(--op-text);
+  }
+
+  .op-tabs[data-orientation='vertical'] {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .op-tabs__list {
+    display: flex;
+    gap: 0.25rem;
+    /* Вкладок больше, чем ширины: список прокручивается, а не ломает страницу. */
+    overflow-x: auto;
+    border-bottom: 1px solid var(--op-border);
+    scrollbar-width: none;
+  }
+
+  .op-tabs[data-orientation='vertical'] .op-tabs__list {
+    flex-direction: column;
+    flex: none;
+    overflow: visible;
+    border-right: 1px solid var(--op-border);
+    border-bottom: 0;
+  }
+
+  .op-tabs__tab {
+    position: relative;
+    flex: none;
+    padding: 0.6rem 0.9rem;
+    font: inherit;
+    font-size: var(--op-text-sm);
+    font-weight: 500;
+    color: var(--op-text-muted);
+    white-space: nowrap;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: var(--op-radius-sm) var(--op-radius-sm) 0 0;
+    transition: color var(--op-duration);
+  }
+
+  .op-tabs__tab:hover:not(:disabled) {
+    color: var(--op-text);
+  }
+  .op-tabs__tab:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .op-tabs__tab[aria-selected='true'] {
+    color: var(--op-accent);
+  }
+
+  /* Подчёркивание выбранной вкладки. */
+  .op-tabs__tab::after {
+    position: absolute;
+    inset: auto 0.5rem -1px;
+    height: 2px;
+    content: '';
+    background: var(--op-accent);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity var(--op-duration);
+  }
+
+  .op-tabs__tab[aria-selected='true']::after {
+    opacity: 1;
+  }
+
+  .op-tabs[data-orientation='vertical'] .op-tabs__tab {
+    text-align: left;
+    border-radius: var(--op-radius-sm) 0 0 var(--op-radius-sm);
+  }
+  .op-tabs[data-orientation='vertical'] .op-tabs__tab::after {
+    inset: 0.4rem -1px 0.4rem auto;
+    width: 2px;
+    height: auto;
+  }
+
+  .op-tabs__tab:focus-visible,
+  .op-tabs__panel:focus-visible {
+    outline: 2px solid var(--op-focus);
+    outline-offset: -2px;
+  }
+
+  .op-tabs__panel {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem 0;
+    font-size: var(--op-text-sm);
+    line-height: var(--op-leading);
+    border-radius: var(--op-radius-sm);
+  }
+
+  .op-tabs[data-orientation='vertical'] .op-tabs__panel {
+    padding: 0;
+  }
+}

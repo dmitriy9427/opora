@@ -1,0 +1,57 @@
+@layer opora.components {
+  .op-switch {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: center;
+    font-size: var(--op-text-sm);
+    line-height: 1.25rem;
+    color: var(--op-text);
+    cursor: pointer;
+  }
+
+  .op-switch[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .op-switch__input {
+    position: absolute;
+    width: 2.5rem;
+    height: 1.5rem;
+    margin: 0;
+    cursor: inherit;
+    opacity: 0;
+  }
+
+  .op-switch__track {
+    flex: none;
+    width: 2.5rem;
+    height: 1.5rem;
+    padding: 2px;
+    background: var(--op-border-strong);
+    border-radius: var(--op-radius-full);
+    transition:
+      background-color var(--op-duration),
+      box-shadow var(--op-duration);
+  }
+
+  .op-switch__thumb {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: var(--op-shadow-sm);
+    transition: transform var(--op-duration) var(--op-ease);
+  }
+
+  .op-switch__input:checked + .op-switch__track {
+    background: var(--op-accent);
+  }
+  .op-switch__input:checked + .op-switch__track .op-switch__thumb {
+    transform: translateX(1rem);
+  }
+  .op-switch__input:focus-visible + .op-switch__track {
+    box-shadow: var(--op-focus-ring);
+  }
+}

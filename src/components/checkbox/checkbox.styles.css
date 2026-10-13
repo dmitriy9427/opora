@@ -1,0 +1,75 @@
+@layer opora.components {
+  .op-checkbox {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    font-size: var(--op-text-sm);
+    line-height: 1.25rem;
+    color: var(--op-text);
+    cursor: pointer;
+  }
+
+  .op-checkbox[data-disabled] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  /*
+   * Input невидим, но ОСТАЁТСЯ на месте и в фокусе. display: none или visibility: hidden
+   * убрали бы его из обхода клавиатурой и из дерева доступности.
+   */
+  .op-checkbox__input {
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: inherit;
+    opacity: 0;
+  }
+
+  .op-checkbox__box {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--op-accent-text);
+    background: var(--op-surface);
+    border: 1.5px solid var(--op-border-strong);
+    border-radius: 5px;
+    transition:
+      background-color var(--op-duration),
+      border-color var(--op-duration),
+      box-shadow var(--op-duration);
+  }
+
+  .op-checkbox__box svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+  .op-checkbox__check,
+  .op-checkbox__dash {
+    opacity: 0;
+  }
+
+  /* Состояние input управляет соседней «коробочкой» — без JavaScript. */
+  .op-checkbox__input:checked + .op-checkbox__box,
+  .op-checkbox__input:indeterminate + .op-checkbox__box {
+    background: var(--op-accent);
+    border-color: var(--op-accent);
+  }
+
+  .op-checkbox__input:checked:not(:indeterminate) + .op-checkbox__box .op-checkbox__check {
+    opacity: 1;
+  }
+  .op-checkbox__input:indeterminate + .op-checkbox__box .op-checkbox__dash {
+    opacity: 1;
+  }
+
+  .op-checkbox__input:focus-visible + .op-checkbox__box {
+    box-shadow: var(--op-focus-ring);
+  }
+  .op-checkbox__input[aria-invalid='true'] + .op-checkbox__box {
+    border-color: var(--op-danger);
+  }
+}
