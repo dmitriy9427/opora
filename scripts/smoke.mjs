@@ -103,8 +103,20 @@ console.log(Object.keys(ui).length)
   // 5. Стили и лишнее в архиве.
   const css = readFileSync(join(target, 'dist', 'styles.css'), 'utf8')
   if (!css.includes('@layer opora.tokens') || !css.includes('.op-button')) throw new Error('styles.css: нет слоёв или компонентов')
-  run('node', ['-e', "import.meta.resolve('opora-ui/styles.css')", '--input-type=module'], app)
-  console.log(`✓ стили: 'opora-ui/styles.css', ${(css.length / 1024).toFixed(1)} КБ`)
+  run(
+    'node',
+    [
+      '-e',
+      "import.meta.resolve('opora-ui/styles.css'); import.meta.resolve('opora-ui/css/base.css'); import.meta.resolve('opora-ui/css/button.css')",
+      '--input-type=module',
+    ],
+    app,
+  )
+  // Стили по частям: файл кнопки включает и стили индикатора загрузки, которым она пользуется.
+  const buttonCss = readFileSync(join(target, 'dist', 'css', 'button.css'), 'utf8')
+  if (!buttonCss.includes('.op-button') || !buttonCss.includes('.op-spinner'))
+    throw new Error('css/button.css: нет стилей кнопки или индикатора')
+  console.log(`✓ стили: 'opora-ui/styles.css' (${(css.length / 1024).toFixed(1)} КБ) и по частям — 'opora-ui/css/*.css'`)
 
   const stray = files.map((file) => file.path).filter((path) => /\.(test|stories)\.|^src\/|\.storybook/.test(path))
   if (stray.length) throw new Error(`В архив попало лишнее: ${stray.join(', ')}`)

@@ -220,3 +220,34 @@
     }
   }
 }
+
+/*
+ * Общее для всплывающих компонентов (Popover, Menu, Select). Лежит здесь, а не в одном из них:
+ * стили компонентов можно подключать по отдельности, и каждый должен работать без соседей.
+ */
+@layer opora.components {
+  /* Общий вид «всплывающей поверхности»: поповер, меню и список селекта выглядят одинаково. */
+  .op-popover,
+  .op-menu,
+  .op-select__popup {
+    z-index: var(--op-z-popup);
+    max-width: calc(100vw - 1rem);
+    color: var(--op-text);
+    background: var(--op-surface-raised);
+    border: 1px solid var(--op-border);
+    border-radius: var(--op-radius);
+    box-shadow: var(--op-shadow-md);
+    animation: op-pop-in 140ms var(--op-ease) both;
+  }
+
+  /* Появление «растёт» от якоря: сверху открытый элемент — из своего низа. */
+  :is(.op-popover, .op-menu, .op-select__popup)[data-side='bottom'] {
+    transform-origin: top;
+  }
+  :is(.op-popover, .op-menu, .op-select__popup)[data-side='top'] {
+    transform-origin: bottom;
+  }
+  :is(.op-popover, .op-menu, .op-select__popup)[data-state='closed'] {
+    animation: op-pop-out 100ms ease-in both;
+  }
+}

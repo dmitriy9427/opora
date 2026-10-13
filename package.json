@@ -30,6 +30,7 @@
       "default": "./dist/index.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./css/*.css": "./dist/css/*.css",
     "./package.json": "./package.json"
   },
   "types": "./dist/index.d.ts",
@@ -45,15 +46,15 @@
   },
   "scripts": {
     "dev": "storybook dev -p 6010 --no-open",
-    "build": "vite build && tsc -p tsconfig.build.json && node scripts/fix-dts.mjs",
+    "build": "vite build && tsc -p tsconfig.build.json && node scripts/fix-dts.mjs && node scripts/build-css.mjs",
     "build:storybook": "storybook build -o storybook-static",
     "lint": "oxlint",
     "format": "prettier --write src .storybook scripts",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.node.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "size": "node scripts/size.mjs",
-    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints styles.css",
+    "size": "node scripts/size.mjs && node scripts/treeshake.mjs",
+    "check:package": "publint && attw --pack . --profile esm-only --exclude-entrypoints styles.css css/*.css",
     "check": "npm run lint && npm run typecheck && npm test && npm run build && npm run size && npm run check:package && npm run test:package",
     "test:package": "node scripts/smoke.mjs",
     "prepublishOnly": "npm run check",
