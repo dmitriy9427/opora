@@ -4,7 +4,7 @@
 основ. Фокус, клавиатура, роли для скринридеров и позиционирование сделаны руками; в
 исходниках каждого компонента написано, **почему** он устроен так.
 
-**Демо (Storybook):** https://dmitriy9427.github.io/opora/ · **Учебник:** [docs/](docs/README.md)
+**Демо (Storybook):** https://dmitriy9427.github.io/opora/ · **Учебник:** [docs/](docs/README.md) — [с чего начать](docs/00-start.md), [разбор кода](docs/code/README.md)
 
 ![Меню, вкладки, бейджи и кнопки в одном экране](docs/screenshots/example.webp)
 

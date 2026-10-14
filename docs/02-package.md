@@ -216,3 +216,40 @@ if (process.env.NODE_ENV !== 'production') console.error(…)
 Это договорённость экосистемы: сборщик приложения подставляет значение, и в продакшен-сборке
 ветка исчезает. `import.meta.env.DEV` для библиотеки не годится — это особенность Vite, и при
 сборке библиотеки он заменил бы её на `false` навсегда.
+
+## Ошибки
+
+> **React в `dependencies`.** У приложения окажется два React — «Invalid hook call». React —
+> в `peerDependencies` и `external` при сборке.
+>
+> **Нет `exports`** — пользователи импортируют внутренние файлы (`opora-ui/dist/primitives/…`), и
+> любое переименование ломает им сборку.
+>
+> **`"types"` не первым** в условиях `exports` — TypeScript находит `default` раньше и не видит
+> типы.
+>
+> **`sideEffects: false` при импорте CSS.** Сборщик решит, что `import './button.styles.css'`
+> ничего не делает, и выбросит стили.
+>
+> **Побочное действие на верхнем уровне модуля** (`window.addEventListener` вне функции) — и
+> tree-shaking перестаёт выбрасывать неиспользуемое. Ловит `scripts/treeshake.mjs`.
+
+## Попробуйте сами
+
+1. Выполните `npm run build` и `npm pack --dry-run`. Какие файлы попадут в архив? Почему там нет
+   `src/`?
+2. Добавьте в начало `src/components/badge/badge.tsx` строку `console.log('badge')` (вне
+   компонента) и запустите `npm run size`. Что изменится?
+3. Почему в библиотеке нет `opora-ui/button` — отдельной точки входа для кнопки?
+
+<details>
+<summary>Ответы</summary>
+
+1. `dist/`, `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`. Исходники пользователю не
+   нужны: `files: ["dist"]`.
+2. Модуль стал «с побочным действием»: приложение, импортирующее только `Button`, получит и
+   `Badge` (сборщик не может выбросить `console.log`). Проверка treeshake покажет рост и может
+   упасть по пределу.
+3. Не нужна: каждый компонент в своём файле (`preserveModules`), модули чистые — обычный
+   `import { Button } from 'opora-ui'` и так даёт только кнопку.
+</details>
